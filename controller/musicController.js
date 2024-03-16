@@ -14,7 +14,7 @@ exports.getmusic = async (req, res) => {
                     const writeStream = fs.createWriteStream('./assets/music/'+secretKey+'.mp4'); 
                     
                     download.pipe(writeStream);
-                    res.status(200).json({ musicUrl: "http://localhost:5000/public/"+secretKey+".mp4" });
+                    res.status(200).json({ musicUrl: window.location.host+secretKey+".mp4" });
 
                 }else{
                     res.status(401).json({ error: "Invalid request" });
