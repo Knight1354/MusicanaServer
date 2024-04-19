@@ -13,7 +13,7 @@ exports.getmusic = async (req, res) => {
             
             const BUCKET = 'musicana';
 
-            const uploadFile = (filePath, keyName) => {
+            const uploadFile = (filePath, keyName,duration) => {
   
                 return new Promise((resolve, reject) => {
                 try {
@@ -34,7 +34,7 @@ exports.getmusic = async (req, res) => {
                 //return reject(err);
                 }
                 if (data) {
-                    res.status(200).json({ musicUrl: data.Location });
+                    res.status(200).json({ musicUrl: data.Location,videoduration:duration });
                 //return resolve(data);
                 }
                 });
@@ -60,7 +60,8 @@ exports.getmusic = async (req, res) => {
                     const ytdl = require('ytdl-core');
                     
                     const download = ytdl('https://www.youtube.com/watch?v='+secretKey, { quality: '140' });
-                    uploadFile(download,'Music/'+secretKey+'.mp4')
+                    const info = await ytdl.getInfo('https://www.youtube.com/watch?v='+secretKey);
+                    uploadFile(download,'Music/'+secretKey+'.mp4',info.videoDetails.lengthSeconds)
                     //const writeStream = fs.createWriteStream('./assets/music/'+secretKey+'.mp4'); 
                     
                    // download.pipe(writeStream);
