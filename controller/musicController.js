@@ -1,7 +1,42 @@
 const axios = require('axios');
 const AWS = require('aws-sdk');
+const fs = require('fs');
+const xml2js = require('xml2js');
 //const { Upload } = require("@aws-sdk/lib-storage");
 //const { S3Client, S3 } = require("@aws-sdk/client-s3");
+
+// Sample XML file path (replace with your actual path)
+const filePath = '../Backend/assets/playlist/playlist.xml';
+var nextsong = "";
+// Function to parse the XML data
+function parseXML(data) {
+  const parser = new xml2js.Parser();
+  return new Promise((resolve, reject) => {
+    parser.parseString(data, (err, result) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(result);
+      }
+    });
+  });
+}
+
+// Function to get key by ID
+function getKeyById(id) {
+  return fs.promises.readFile(filePath, 'utf-8')
+    .then(parseXML)
+    .then(data => {
+      const fields = data.data.field;
+      for (const field of fields) {
+        if (field.$.id === String(id)) { // Ensure ID conversion to string
+          return field.$.key;
+        }
+      }
+      return null;
+    });
+}
+
 
 exports.getmusic = async (req, res) => {
     try {
@@ -34,7 +69,8 @@ exports.getmusic = async (req, res) => {
                 //return reject(err);
                 }
                 if (data) {
-                    res.status(200).json({ musicUrl: data.Location });
+                 
+                    res.status(200).json({ musicUrl: data.Location,nextSong : nextsong });
                 //return resolve(data);
                 }
                 });
@@ -60,6 +96,18 @@ exports.getmusic = async (req, res) => {
                     const ytdl = require('ytdl-core');
                     
                     const download = ytdl('https://www.youtube.com/watch?v='+secretKey, { quality: '140' });
+                    getKeyById(1)
+                    .then(key => {
+                      if (key) {
+                        nextsong=key;
+                        console.log(`Key for ID 1: ${key}`);
+                      } else {
+                        console.log("No field found with ID 1");
+                      }
+                    })
+                    .catch(err => {
+                      console.error("Error parsing XML:", err);
+                    });
                     uploadFile(download,'Music/'+secretKey+'.mp4')
                     //const writeStream = fs.createWriteStream('./assets/music/'+secretKey+'.mp4'); 
                     
