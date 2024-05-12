@@ -6,7 +6,7 @@ const xml2js = require('xml2js');
 //const { S3Client, S3 } = require("@aws-sdk/client-s3");
 
 // Sample XML file path (replace with your actual path)
-const filePath = '../Backend/assets/playlist/playlist.xml';
+const filePath = './assets/playlist/playlist.xml';
 var nextsong = "";
 // Function to parse the XML data
 function parseXML(data) {
