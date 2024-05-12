@@ -38,7 +38,6 @@ function getKeyById() {
     .then(data => {
       const fields = data.data.field;
       var id = getRandomInt(1, fields.length)
-      return fields.length;
       for (const field of fields) {
         if (field.$.id === String(id)) { // Ensure ID conversion to string
             if (field.$.key == secretKey){
