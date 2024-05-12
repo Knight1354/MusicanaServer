@@ -1,5 +1,1 @@
-{ 
-    "version": 2,
-    "builds": [{ "source": "./index.js", "destination": "/" }] ,
-     "rewrites": [{ "source": "/(.*)", "destination": "/" }] 
-}
+{ "version": 2, "rewrites": [{ "source": "/(.*)", "destination": "/api" }] }
