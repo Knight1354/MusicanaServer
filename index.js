@@ -1,19 +1,19 @@
-const express = require('express')
+const express = require('express');
+const bodyParser = require('body-parser');
+const musicRoutes = require('./routes/musicRoutes');
+const cors = require('cors');
 
-const app = express()
-const PORT = 4000
+const app = express();
+const PORT = process.env.PORT || 5000;
+app.use('/public', express.static('assets/music'))
+app.use(express.json());
+
+// Middleware
+app.use(cors());
+
+// Routes
+app.use('/music', musicRoutes);
 
 app.listen(PORT, () => {
-  console.log(`API listening on PORT ${PORT} `)
-})
-
-app.get('/', (req, res) => {
-  res.send('Hey this is my API running 🥳')
-})
-
-app.get('/about', (req, res) => {
-  res.send('This is my about route..... ')
-})
-
-// Export the Express API
-module.exports = app
+  console.log(`Server is running on port ${PORT}`);
+});
