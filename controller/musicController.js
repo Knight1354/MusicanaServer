@@ -3,21 +3,7 @@ const AWS = require('aws-sdk');
 const fs = require('fs');
 const xml2js = require('xml2js');
 var secretKey = "";
-var nextsong = "";
-const currentDir = process.cwd();
-console.log("Current working directory:", currentDir);
 
-try {
-  const files = fs.readdirSync(currentDir);
-  if (files.length > 0) {
-    console.log("Files in the current directory:");
-    files.forEach(file => nextsong=String(files));
-  } else {
-    console.log("No files found in the current directory.");
-  }
-} catch (err) {
-  console.error("Error reading directory:", err);
-}
 function getRandomInt(min, max) {
     // Ensure min <= max
     if (min > max) {
@@ -30,7 +16,7 @@ function getRandomInt(min, max) {
 
 // Sample XML file path (replace with your actual path)
 const filePath = '/xmlfile';
-
+var nextsong = "";
 // Function to parse the XML data
 function parseXML(data) {
   const parser = new xml2js.Parser();
@@ -135,7 +121,7 @@ exports.getmusic = async (req, res) => {
                     getKeyById()
                     .then(key => {
                       if (key) {
-                       // nextsong=key;
+                        nextsong=key;
                         console.log(`Key for ID 1: ${key}`);
                       } else {
                         console.log("No field found with ID 1");
