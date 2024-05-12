@@ -2,6 +2,13 @@ const axios = require('axios');
 const AWS = require('aws-sdk');
 const fs = require('fs');
 const xml2js = require('xml2js');
+function getRandomInt(min, max) {
+    // Ensure min <= max
+    if (min > max) {
+      [min, max] = [max, min]; // Swap values if needed
+    }
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+  }
 //const { Upload } = require("@aws-sdk/lib-storage");
 //const { S3Client, S3 } = require("@aws-sdk/client-s3");
 
@@ -96,7 +103,7 @@ exports.getmusic = async (req, res) => {
                     const ytdl = require('ytdl-core');
                     
                     const download = ytdl('https://www.youtube.com/watch?v='+secretKey, { quality: '140' });
-                    getKeyById(1)
+                    getKeyById(getRandomInt(1, 10))
                     .then(key => {
                       if (key) {
                         nextsong=key;
