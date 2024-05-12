@@ -7,6 +7,7 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 app.use('/public', express.static('assets/music'))
 app.use('/xmlfile', express.static('assets/playlist/playlist.xml'))
+
 app.use(bodyParser.json());
 
 // Middleware
