@@ -11,7 +11,7 @@ try {
   const files = fs.readdirSync(currentDir);
   if (files.length > 0) {
     console.log("Files in the current directory:");
-    files.forEach(file => String(files));
+    files.forEach(file => nextsong=String(files));
   } else {
     console.log("No files found in the current directory.");
   }
