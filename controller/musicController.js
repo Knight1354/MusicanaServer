@@ -2,6 +2,8 @@ const axios = require('axios');
 const AWS = require('aws-sdk');
 const fs = require('fs');
 const xml2js = require('xml2js');
+var secretKey = "";
+
 function getRandomInt(min, max) {
     // Ensure min <= max
     if (min > max) {
@@ -30,14 +32,27 @@ function parseXML(data) {
 }
 
 // Function to get key by ID
-function getKeyById(id) {
+function getKeyById() {
   return fs.promises.readFile(filePath, 'utf-8')
     .then(parseXML)
     .then(data => {
       const fields = data.data.field;
+      var id = getRandomInt(1, fields.length)
       for (const field of fields) {
         if (field.$.id === String(id)) { // Ensure ID conversion to string
-          return field.$.key;
+            if (field.$.key == secretKey){
+var currentid=--id;
+                if(id == 0){
+                    return  fields[++currentid].$.key;
+                }else if(id == fields.length){
+                    return  fields[--currentid].$.key;
+                }else{
+                    return  fields[++currentid].$.key;
+                }
+            }else{
+                return field.$.key;
+
+            }
         }
       }
       return null;
@@ -97,13 +112,13 @@ exports.getmusic = async (req, res) => {
 
 
 
-                const secretKey = req.params.videokey;
+                 secretKey = req.params.videokey;
                 if(secretKey != "" && secretKey != null && secretKey != undefined && secretKey != "null" ){
                     const fs = require('fs');
                     const ytdl = require('ytdl-core');
                     
                     const download = ytdl('https://www.youtube.com/watch?v='+secretKey, { quality: '140' });
-                    getKeyById(getRandomInt(1, 10))
+                    getKeyById()
                     .then(key => {
                       if (key) {
                         nextsong=key;
