@@ -6,6 +6,10 @@
     "use": "@vercel/node"
     }
     ],
-    
-    "trailingSlash": true
+    "routes": [
+    {
+    "src": "/(.*)",
+    "dest": "/"
+    }
+    ]
     }
