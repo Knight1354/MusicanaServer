@@ -2,8 +2,9 @@
   "name": "musicana",
   "version": "1.0.0",
   "description": "fetch and save data for the music app",
-  "main": "server.js",
+  "main": "index.js",
   "scripts": {
+    "start": "node index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "pratik and siddhi",
