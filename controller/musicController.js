@@ -29,7 +29,7 @@ function getRandomInt(min, max) {
 //const { S3Client, S3 } = require("@aws-sdk/client-s3");
 
 // Sample XML file path (replace with your actual path)
-const filePath = './assets/playlist/playlist.xml';
+const filePath = './controller/playlist/playlist.xml';
 
 // Function to parse the XML data
 function parseXML(data) {
