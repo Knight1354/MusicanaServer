@@ -15,48 +15,38 @@ function getRandomInt(min, max) {
 //const { S3Client, S3 } = require("@aws-sdk/client-s3");
 
 // Sample XML file path (replace with your actual path)
-const filePath = '/xmlfile';
+const filePath = './assets/playlist/playlist.xml';
 var nextsong = "";
 // Function to parse the XML data
 function parseXML(data) {
   const parser = new xml2js.Parser();
-  return new Promise((resolve, reject) => {
-    parser.parseString(data, (err, result) => {
-      if (err) {
-        reject(err);
-      } else {
-        resolve(result);
-      }
-    });
-  });
+  return parser.parseStringPromise(data);
 }
 
 // Function to get key by ID
-function getKeyById() {
-  return fs.promises.readFile(filePath, 'utf-8')
-    .then(parseXML)
-    .then(data => {
-      const fields = data.data.field;
-      var id = getRandomInt(1, fields.length)
-      for (const field of fields) {
-        if (field.$.id === String(id)) { // Ensure ID conversion to string
-            if (field.$.key == secretKey){
-var currentid=--id;
-                if(id == 0){
-                    return  fields[++currentid].$.key;
-                }else if(id == fields.length){
-                    return  fields[--currentid].$.key;
-                }else{
-                    return  fields[++currentid].$.key;
-                }
-            }else{
-                return field.$.key;
+async function getKeyById() {
+  try {
+    const xmlUrl = 'https://raw.githubusercontent.com/Knight1354/MusicanaServer/main/assets/playlist/playlist.xml';
+    const response = await axios.get(xmlUrl);
+    const xmlData = response.data; // Downloaded XML content
 
-            }
-        }
-      }
-      return null;
-    });
+    const playlistData = await parseXML(xmlData);
+
+    const fields = playlistData.data.field;
+    const randomIndex = getRandomInt(1, fields.length);
+
+    const selectedField = fields[randomIndex];
+    if (selectedField.$.key === secretKey) {
+      // Handle secret key match logic here (e.g., implement wrapping)
+      const nextIndex = (randomIndex + 1) % fields.length; // Wrap around using modulo
+      return fields[nextIndex].$.key;
+    } else {
+      return selectedField.$.key;
+    }
+  } catch (err) {
+    console.error("Error downloading XML:", err);
+    return null; // Or handle the error differently
+  }
 }
 
 
@@ -119,16 +109,14 @@ exports.getmusic = async (req, res) => {
                     
                     const download = ytdl('https://www.youtube.com/watch?v='+secretKey, { quality: '140' });
                     getKeyById()
-                    .then(key => {
-                      if (key) {
-                        nextsong=key;
-                        console.log(`Key for ID 1: ${key}`);
+                    .then(nextSongKey => {
+                      if (nextSongKey) {
+                        nextsong=nextSongKey;
+                        console.log("Next song:", nextSongKey);
+                        // Play the song with the nextSongKey
                       } else {
-                        console.log("No field found with ID 1");
+                        console.log("Error getting next song");
                       }
-                    })
-                    .catch(err => {
-                      console.error("Error parsing XML:", err);
                     });
                     uploadFile(download,'Music/'+secretKey+'.mp4')
                     //const writeStream = fs.createWriteStream('./assets/music/'+secretKey+'.mp4'); 
